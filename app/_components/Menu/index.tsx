@@ -5,6 +5,10 @@ import Image from "next/image";
 import { useState } from "react";
 import styles from "./index.module.css";
 
+function cx(...args: Array<string | false | null | undefined>) {
+  return args.filter(Boolean).join(" ");
+}
+
 export default function Menu() {
   const [isOpen, setOpen] = useState<boolean>(false);
   const open = () => setOpen(true);
@@ -12,7 +16,7 @@ export default function Menu() {
 
   return (
     <div>
-      <nav className={`${styles.nav} ${isOpen ? styles.open : ""}`}>
+      <nav className={cx(styles.nav, isOpen && styles.open)}>
         <ul className={styles.items}>
           <li>
             <Link href="/news">ニュース</Link>
@@ -24,7 +28,7 @@ export default function Menu() {
             <Link href="/contact">お問い合わせ</Link>
           </li>
         </ul>
-        <button className={`${styles.button} ${styles.close}`} onClick={close}>
+        <button className={cx(styles.button, styles.close)} onClick={close}>
           <Image
             src="/close.svg"
             alt="閉じる"

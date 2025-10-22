@@ -1,4 +1,4 @@
-// Lightweight local types to avoid requiring microcms-js-sdk at build time
+// Lightweight local types to allow running without microcms-js-sdk installed
 export type MicroCMSImage = {
   url: string;
   width?: number;
@@ -36,14 +36,12 @@ export type News = {
 let client: any = null;
 if (process.env.MICROCMS_SERVICE_DOMAIN && process.env.MICROCMS_API_KEY) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createClient } = require("microcms-js-sdk");
     client = createClient({
       serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN,
       apiKey: process.env.MICROCMS_API_KEY,
     });
   } catch (e) {
-    // SDK not installed or failed to load; fall back to mock below
     client = null;
   }
 }
@@ -83,7 +81,7 @@ const mockNews = {
 
 export const getMembersList = async (queries?: MicroCMSQueries) => {
   if (client) {
-    return client.getList<Member>({ endpoint: "members", queries });
+    return client.getList({ endpoint: "members", queries });
   }
   // Return a mocked empty list for development
   return {
@@ -96,7 +94,7 @@ export const getMembersList = async (queries?: MicroCMSQueries) => {
 
 export const getNewsList = async (queries?: MicroCMSQueries) => {
   if (client) {
-    return client.getList<News>({ endpoint: "news", queries });
+    return client.getList({ endpoint: "news", queries });
   }
   // Apply simple limit if provided
   const limit = (queries && (queries as any).limit) || mockNews.contents.length;
